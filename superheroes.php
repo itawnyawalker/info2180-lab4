@@ -1,5 +1,12 @@
-<?php
+<?php 
+
 header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, DELETE, HEAD, OPTIONS');
+
+$found = false;
+$val = filter_var($_GET['query'], FILTER_SANITIZE_STRING);
+
+
 $superheroes = [
   [
       "id" => 1,
@@ -65,8 +72,26 @@ $superheroes = [
 
 ?>
 
-<ul>
-<?php foreach ($superheroes as $superhero): ?>
-  <li><?= $superhero['alias']; ?></li>
-<?php endforeach; ?>
-</ul>
+<?php if ($val == ''): ?>
+    <h2> RESULTS </h2>
+    <hr>
+    <ul>
+        <?php foreach ($superheroes as $superhero): ?>
+            <li><?=$superhero['alias']; ?></li>
+        <?php endforeach; ?>
+    </ul>
+<?php else: ?>
+    <h2> RESULTS </h2>
+    <hr>
+    <?php foreach ($superheroes as $superhero): 
+        if (strtoupper($val)=== strtoupper($superhero['alias']) or strtoupper($val)=== strtoupper($superhero['name'])): ?>
+            <h3><?= $superhero['alias']; ?></h3>
+            <h4><?= $superhero['name']; ?></h4>
+            <p><?= $superhero['biography']; ?></p>
+            <?php $found = true; 
+        endif?>
+   <?php endforeach; 
+    if ($found == false): ?>
+        <h4 class="error"> SUPERHERO NOT FOUND </h4>
+    <?php endif;
+endif; ?>
